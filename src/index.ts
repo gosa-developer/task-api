@@ -13,7 +13,6 @@ import { requestLogger } from './middleware/requestLogger';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // Swagger options
 const swaggerOptions = {
@@ -24,11 +23,6 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'A professional Task Management API',
     },
-    servers: [
-      {
-        url: `http://localhost:${port}`,
-      },
-    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -44,7 +38,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./src/routes/*.ts', './src/controllers/*.ts'], // Path to the API docs
+  apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -61,13 +55,12 @@ app.use('/', routes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
 // Error handling
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+
+export default app;
